@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -37,6 +38,10 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    if (n === 0) {
+      return [];
+    }
+    return n === undefined ? array[array.length-1] : array.slice(-n);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +50,15 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        iterator(collection[i], i, collection);
+      }
+    } else {
+      for (var eachProp in collection) {
+        iterator(collection[eachProp], eachProp, collection);
+      }
+    }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -66,16 +80,65 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var resultArr = [];
+    for (var i = 0; i < collection.length; i++) {
+      if (test(collection[i])) {
+        resultArr.push(collection[i]);
+      }
+    }
+    return resultArr;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var filteredArr = _.filter(collection, test);
+    var resultArr = _.filter(collection, function(item) {
+      return !filteredArr.includes(item)
+    });
+    return resultArr;
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+
+    // create a set
+    var mySet = new Set()
+    // create result array
+    var resultArr = [];
+
+    // if we are given an iterator
+    if (iterator) {
+      // iterate through array
+      for (var i = 0; i < array.length; i++) {
+        var currentElement = array[i];
+        // pass transformed element through iterator
+        var resultElement = iterator(currentElement);
+        // check if transformed element exists in the set
+        if (!mySet.has(resultElement)) {
+          // if not, push original element to result array, add transformed element to set
+          mySet.add(resultElement);
+          resultArr.push(currentElement);
+        }
+        // if it does, do nothing
+      }
+    // else, if no iterator
+    } else {
+      // iterate through array
+      for (var i = 0; i < array.length; i++) {
+        var currentElement = array[i];
+        // for every element, check to see if element exists in set
+        // if not, add element to set, add element to array
+        if (!mySet.has(currentElement)) {
+          mySet.add(currentElement);
+          resultArr.push(currentElement);
+        }
+        // else (if element does exist in set), do nothing
+      }
+    }
+    // return result array
+    return resultArr;
   };
 
 
@@ -107,19 +170,19 @@
   // Reduces an array or object to a single value by repetitively calling
   // iterator(accumulator, item) for each item. accumulator should be
   // the return value of the previous iterator call.
-  //  
+  //
   // You can pass in a starting value for the accumulator as the third argument
   // to reduce. If no starting value is passed, the first element is used as
   // the accumulator, and is never passed to the iterator. In other words, in
   // the case where a starting value is not passed, the iterator is not invoked
   // until the second element, with the first element as its second argument.
-  //  
+  //
   // Example:
   //   var numbers = [1,2,3];
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
-  //  
+  //
   //   var identity = _.reduce([5], function(total, number){
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
