@@ -154,7 +154,7 @@
     _.each(collection, function (item) {
       res.push(iterator(item));
     })
-      //apply iterator to each element, push this to res array
+    //apply iterator to each element, push this to res array
 
     //return result
     return res;
@@ -199,6 +199,39 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+
+
+    // var myAccumulator;
+
+    // if collection is an array
+    if (Array.isArray(collection)) {
+      var startingIndex = 0;
+      // if no accumulator is given
+      if (accumulator === undefined) {
+        var accumulator = collection[0];
+        startingIndex = 1;
+      }
+      //iterate over collection: for every value
+      for (var i = startingIndex; i < collection.length; i++) {
+
+        var currentElement = collection[i];
+        //call iterator, passing in the accumulator, value
+        accumulator = iterator(accumulator, currentElement);
+
+      }
+    // if collection is an object
+    } else {
+      // loop through
+      for (var eachProp in collection) {
+        var currentElement = collection[eachProp];
+        //call iterator, passing in the accumulator, value
+        myAccumulator = iterator(myAccumulator, currentElement);
+      }
+    }
+
+    // return accumulator
+    return accumulator;
+
   };
 
   // Determine if the array or object contains a given value (using `===`).

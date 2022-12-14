@@ -401,7 +401,7 @@
           { name: 'curly', age: 50 }
         ];
 
-        expect(_.pluck(people, 'name')).to.FILL_ME_IN(['moe', 'curly']);
+        expect(_.pluck(people, 'name')).to.eql(['moe', 'curly']);
       });
 
       it('should not modify the original array', function() {
@@ -472,6 +472,8 @@
           // FILL_ME_IN
           // Add a line here that makes this test pass
           // for a working implementation of reduce
+          orderTraversed.push(item)
+          // memo = memo - item;
           return memo;
         }, 10);
 
