@@ -200,9 +200,6 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
 
-
-    // var myAccumulator;
-
     // if collection is an array
     if (Array.isArray(collection)) {
       var startingIndex = 0;
@@ -225,7 +222,7 @@
       for (var eachProp in collection) {
         var currentElement = collection[eachProp];
         //call iterator, passing in the accumulator, value
-        myAccumulator = iterator(myAccumulator, currentElement);
+        accumulator = iterator(accumulator, currentElement);
       }
     }
 
@@ -249,13 +246,60 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    if (iterator) {
+      for (var i = 0; i < collection.length; i++) {
+        var currentElement = collection[i];
+        if(!iterator(currentElement)) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      for (var i = 0; i < collection.length; i++) {
+        var currentElement = collection[i];
+        if (!currentElement) {
+          return false;
+        }
+      }
+      return true;
+    }
     // TIP: Try re-using reduce() here.
+    // return _.reduce(collection, function (accumulator, item) {
+    //   //if accumulator is true, return iterator
+    //   if (accumulator === true) {
+    //     return iterator(item)
+    //   } else {
+    //     return false
+    //   }
+    //   //else return false
+    // }, true);
+    //call reduce on the collection with a default accumulator of true
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (collection.length === 0) {
+      return false;
+    }
+
+    if (iterator) {
+      for (var i = 0; i < collection.length; i++) {
+        if (iterator(collection[i])) {
+          return true
+        }
+      }
+      return false;
+    } else {
+      for (var i = 0; i < collection.length; i++) {
+        if (collection[i]) {
+          return true
+        }
+      }
+      return false
+    }
   };
 
 
